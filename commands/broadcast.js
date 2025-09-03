@@ -5,6 +5,9 @@ async function broadcastCommand(sock, chatId, message, args) {
     const sender = message.key?.participant || message.key?.remoteJid;
     const ownerJid = settings.ownerNumber + '@s.whatsapp.net'; // Tambahkan suffix WhatsApp
 
+    console.log('Broadcast command sender:', sender);
+    console.log('Expected owner JID:', ownerJid);
+
     if (sender !== ownerJid) {
         await sock.sendMessage(chatId, { text: '❌ Kamu tidak punya akses untuk broadcast!' }, { quoted: message });
         return;
@@ -25,7 +28,7 @@ async function broadcastCommand(sock, chatId, message, args) {
     let failed = 0;
 
     // Format pesan broadcast sesuai spesifikasi
-    const broadcastMessage = `📢 Broadcast
+    const broadcastMessage = `*Broadcast dari SantStyle*
 
 ${bcText}`;
 

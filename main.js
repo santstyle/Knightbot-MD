@@ -83,6 +83,8 @@ const textmakerCommand = require('./commands/textmaker');
 const { handleAntideleteCommand, handleMessageRevocation, storeMessage } = require('./commands/antidelete');
 const clearTmpCommand = require('./commands/cleartmp');
 const setProfilePicture = require('./commands/setpp');
+const setLangCommand = require('./commands/setlang');
+const broadcastCommand = require('./commands/broadcast');
 const instagramCommand = require('./commands/instagram');
 const facebookCommand = require('./commands/facebook');
 const playCommand = require('./commands/play');
@@ -372,6 +374,19 @@ async function handleMessages(sock, messageUpdate, printLog) {
                     console.error('Error updating access mode:', error);
                     await sock.sendMessage(chatId, { text: 'Failed to update bot access mode' });
                 }
+                break;
+            case userMessage.startsWith('.setlang'):
+                const lang = userMessage.split(' ')[1];
+                if (!lang || (lang !== 'en' && lang !== 'id')) {
+                    await sock.sendMessage(chatId, { text: 'Invalid language. Use .setlang en or .setlang id' });
+                    break;
+                }
+                await setLangCommand(sock, chatId, message, [lang]);
+                break;
+            case userMessage.startsWith('.bc'):
+            case userMessage.startsWith('.broadcast'):
+                const bcArgs = userMessage.split(' ').slice(1);
+                await broadcastCommand(sock, chatId, message, bcArgs);
                 break;
             case userMessage === '.owner':
                 await ownerCommand(sock, chatId);
