@@ -2,25 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const channelInfo = {
-    contextInfo: {
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363161513685998@newsletter',
-            newsletterName: 'KnightBot MD',
-            serverMessageId: -1
-        }
-    }
-};
+
 
 async function clearSessionCommand(sock, chatId, msg) {
     try {
         // Check if sender is owner
         if (!msg.key.fromMe) {
-            await sock.sendMessage(chatId, { 
-                text: '❌ This command can only be used by the owner!',
-                ...channelInfo
+            await sock.sendMessage(chatId, {
+                text: '❌ This command can only be used by the owner!'
             });
             return;
         }
@@ -29,9 +18,8 @@ async function clearSessionCommand(sock, chatId, msg) {
         const sessionDir = path.join(__dirname, '../session');
 
         if (!fs.existsSync(sessionDir)) {
-            await sock.sendMessage(chatId, { 
-                text: '❌ Session directory not found!',
-                ...channelInfo
+            await sock.sendMessage(chatId, {
+                text: '❌ Session directory not found!'
             });
             return;
         }
@@ -41,13 +29,12 @@ async function clearSessionCommand(sock, chatId, msg) {
         let errorDetails = [];
 
         // Send initial status
-        await sock.sendMessage(chatId, { 
-            text: `🔍 Optimizing session files for better performance...`,
-            ...channelInfo
+        await sock.sendMessage(chatId, {
+            text: `🔍 Optimizing session files for better performance...`
         });
 
         const files = fs.readdirSync(sessionDir);
-        
+
         // Count files by type for optimization
         let appStateSyncCount = 0;
         let preKeyCount = 0;
@@ -75,22 +62,20 @@ async function clearSessionCommand(sock, chatId, msg) {
 
         // Send completion message
         const message = `✅ Session files cleared successfully!\n\n` +
-                       `📊 Statistics:\n` +
-                       `• Total files cleared: ${filesCleared}\n` +
-                       `• App state sync files: ${appStateSyncCount}\n` +
-                       `• Pre-key files: ${preKeyCount}\n` +
-                       (errors > 0 ? `\n⚠️ Errors encountered: ${errors}\n${errorDetails.join('\n')}` : '');
+            `📊 Statistics:\n` +
+            `• Total files cleared: ${filesCleared}\n` +
+            `• App state sync files: ${appStateSyncCount}\n` +
+            `• Pre-key files: ${preKeyCount}\n` +
+            (errors > 0 ? `\n⚠️ Errors encountered: ${errors}\n${errorDetails.join('\n')}` : '');
 
-        await sock.sendMessage(chatId, { 
-            text: message,
-            ...channelInfo
+        await sock.sendMessage(chatId, {
+            text: message
         });
 
     } catch (error) {
         console.error('Error in clearsession command:', error);
-        await sock.sendMessage(chatId, { 
-            text: '❌ Failed to clear session files!',
-            ...channelInfo
+        await sock.sendMessage(chatId, {
+            text: '❌ Failed to clear session files!'
         });
     }
 }

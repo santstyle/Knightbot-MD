@@ -1,9 +1,8 @@
 const axios = require('axios');
-const { channelInfo } = require('../lib/messageConfig');
 
 async function characterCommand(sock, chatId, message) {
     let userToAnalyze;
-    
+
     // Check for mentioned users
     if (message.message?.extendedTextMessage?.contextInfo?.mentionedJid?.length > 0) {
         userToAnalyze = message.message.extendedTextMessage.contextInfo.mentionedJid[0];
@@ -12,11 +11,10 @@ async function characterCommand(sock, chatId, message) {
     else if (message.message?.extendedTextMessage?.contextInfo?.participant) {
         userToAnalyze = message.message.extendedTextMessage.contextInfo.participant;
     }
-    
+
     if (!userToAnalyze) {
-        await sock.sendMessage(chatId, { 
-            text: 'Please mention someone or reply to their message to analyze their character!', 
-            ...channelInfo 
+        await sock.sendMessage(chatId, {
+            text: 'Please mention someone or reply to their message to analyze their character!'
         });
         return;
     }
@@ -66,15 +64,13 @@ async function characterCommand(sock, chatId, message) {
         await sock.sendMessage(chatId, {
             image: { url: profilePic },
             caption: analysis,
-            mentions: [userToAnalyze],
-            ...channelInfo
+            mentions: [userToAnalyze]
         });
 
     } catch (error) {
         console.error('Error in character command:', error);
-        await sock.sendMessage(chatId, { 
-            text: 'Failed to analyze character! Try again later.',
-            ...channelInfo 
+        await sock.sendMessage(chatId, {
+            text: 'Failed to analyze character! Try again later.'
         });
     }
 }

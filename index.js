@@ -1,14 +1,4 @@
-/**
- * Knight Bot - A WhatsApp Bot
- * Copyright (c) 2024 Professor
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the MIT License.
- * 
- * Credits:
- * - Baileys Library by @adiwajshing
- * - Pair Code implementation inspired by TechGod143 & DGXEON
- */
+
 require('./settings')
 const { Boom } = require('@hapi/boom')
 const fs = require('fs')
@@ -73,7 +63,7 @@ setInterval(() => {
 let phoneNumber = "911234567890"
 let owner = JSON.parse(fs.readFileSync('./data/owner.json'))
 
-global.botname = "KNIGHT BOT"
+global.botname = "Artoria Bot V1"
 global.themeemoji = "•"
 const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code")
 const useMobile = process.argv.includes("--mobile")
@@ -143,16 +133,7 @@ async function startXeonBotInc() {
                 // Only try to send error message if we have a valid chatId
                 if (mek.key && mek.key.remoteJid) {
                     await XeonBotInc.sendMessage(mek.key.remoteJid, {
-                        text: '❌ An error occurred while processing your message.',
-                        contextInfo: {
-                            forwardingScore: 1,
-                            isForwarded: true,
-                            forwardedNewsletterMessageInfo: {
-                                newsletterJid: '120363161513685998@newsletter',
-                                newsletterName: 'KnightBot MD',
-                                serverMessageId: -1
-                            }
-                        }
+                        text: '❌ An error occurred while processing your message.'
                     }).catch(console.error);
                 }
             }
@@ -242,27 +223,13 @@ async function startXeonBotInc() {
 
             const botNumber = XeonBotInc.user.id.split(':')[0] + '@s.whatsapp.net';
             await XeonBotInc.sendMessage(botNumber, {
-                text: `🤖 Bot Connected Successfully!\n\n⏰ Time: ${new Date().toLocaleString()}\n✅ Status: Online and Ready!
-                \n✅Make sure to join below channel`,
-                contextInfo: {
-                    forwardingScore: 1,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363161513685998@newsletter',
-                        newsletterName: 'KnightBot MD',
-                        serverMessageId: -1
-                    }
-                }
+                text: `🤖 Bot Connected Successfully!\n\n⏰ Time: ${new Date().toLocaleString()}\n✅ Status: Online and Ready!`
             });
 
             await delay(1999)
-            console.log(chalk.yellow(`\n\n                  ${chalk.bold.blue(`[ ${global.botname || 'KNIGHT BOT'} ]`)}\n\n`))
+            console.log(chalk.yellow(`\n\n ${chalk.bold.blue(`[ ${global.botname || 'Artoria Bot V1'} ]`)}\n\n`))
             console.log(chalk.cyan(`< ================================================== >`))
-            console.log(chalk.magenta(`\n${global.themeemoji || '•'} YT CHANNEL: MR UNIQUE HACKER`))
-            console.log(chalk.magenta(`${global.themeemoji || '•'} GITHUB: mrunqiuehacker`))
-            console.log(chalk.magenta(`${global.themeemoji || '•'} WA NUMBER: ${owner}`))
-            console.log(chalk.magenta(`${global.themeemoji || '•'} CREDIT: MR UNIQUE HACKER`))
-            console.log(chalk.green(`${global.themeemoji || '•'} 🤖 Bot Connected Successfully! ✅`))
+            console.log(chalk.green(`${global.themeemoji || '•'} 👑 Bot Connected Successfully! ✅`))
         }
         if (connection === 'close') {
             const statusCode = lastDisconnect?.error?.output?.statusCode
@@ -282,12 +249,6 @@ async function startXeonBotInc() {
 
     XeonBotInc.ev.on('group-participants.update', async (update) => {
         await handleGroupParticipantUpdate(XeonBotInc, update);
-    });
-
-    XeonBotInc.ev.on('messages.upsert', async (m) => {
-        if (m.messages[0].key && m.messages[0].key.remoteJid === 'status@broadcast') {
-            await handleStatus(XeonBotInc, m);
-        }
     });
 
     XeonBotInc.ev.on('status.update', async (status) => {

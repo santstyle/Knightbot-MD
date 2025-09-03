@@ -6,39 +6,39 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
     try {
         // Get the image to blur
         let imageBuffer;
-        
+
         if (quotedMessage) {
             // If replying to a message
             if (!quotedMessage.imageMessage) {
-                await sock.sendMessage(chatId, { 
-                    text: '❌ Please reply to an image message' 
+                await sock.sendMessage(chatId, {
+                    text: '❌ Please reply to an image message'
                 });
                 return;
             }
-            
+
             const quoted = {
                 message: {
                     imageMessage: quotedMessage.imageMessage
                 }
             };
-            
+
             imageBuffer = await downloadMediaMessage(
                 quoted,
                 'buffer',
-                { },
-                { }
+                {},
+                {}
             );
         } else if (message.message?.imageMessage) {
             // If image is in current message
             imageBuffer = await downloadMediaMessage(
                 message,
                 'buffer',
-                { },
-                { }
+                {},
+                {}
             );
         } else {
-            await sock.sendMessage(chatId, { 
-                text: '❌ Please reply to an image or send an image with caption .blur' 
+            await sock.sendMessage(chatId, {
+                text: '❌ Please reply to an image or send an image with caption .blur'
             });
             return;
         }
@@ -60,22 +60,13 @@ async function blurCommand(sock, chatId, message, quotedMessage) {
         // Send the blurred image
         await sock.sendMessage(chatId, {
             image: blurredImage,
-            caption: '*[ ✔ ] Image Blurred Successfully*',
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363161513685998@newsletter',
-                    newsletterName: 'KnightBot MD',
-                    serverMessageId: -1
-                }
-            }
+            caption: '*[ ✔ ] Image Blurred Successfully*'
         });
 
     } catch (error) {
         console.error('Error in blur command:', error);
-        await sock.sendMessage(chatId, { 
-            text: '❌ Failed to blur image. Please try again later.' 
+        await sock.sendMessage(chatId, {
+            text: '❌ Failed to blur image. Please try again later.'
         });
     }
 }

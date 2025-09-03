@@ -23,28 +23,19 @@ async function autotypingCommand(sock, chatId, message) {
         // Check if sender is the owner (bot itself)
         if (!message.key.fromMe) {
             await sock.sendMessage(chatId, {
-                text: '❌ This command is only available for the owner!',
-                contextInfo: {
-                    forwardingScore: 1,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363161513685998@newsletter',
-                        newsletterName: 'KnightBot MD',
-                        serverMessageId: -1
-                    }
-                }
+                text: '❌ This command is only available for the owner!'
             });
             return;
         }
 
         // Get command arguments
-        const args = message.message?.conversation?.trim().split(' ').slice(1) || 
-                    message.message?.extendedTextMessage?.text?.trim().split(' ').slice(1) || 
-                    [];
-        
+        const args = message.message?.conversation?.trim().split(' ').slice(1) ||
+            message.message?.extendedTextMessage?.text?.trim().split(' ').slice(1) ||
+            [];
+
         // Initialize or read config
         const config = initConfig();
-        
+
         // Toggle based on argument or toggle current state if no argument
         if (args.length > 0) {
             const action = args[0].toLowerCase();
@@ -54,16 +45,7 @@ async function autotypingCommand(sock, chatId, message) {
                 config.enabled = false;
             } else {
                 await sock.sendMessage(chatId, {
-                    text: '❌ Invalid option! Use: .autotyping on/off',
-                    contextInfo: {
-                        forwardingScore: 1,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363161513685998@newsletter',
-                            newsletterName: 'KnightBot MD',
-                            serverMessageId: -1
-                        }
-                    }
+                    text: '❌ Invalid option! Use: .autotyping on/off'
                 });
                 return;
             }
@@ -71,37 +53,19 @@ async function autotypingCommand(sock, chatId, message) {
             // Toggle current state
             config.enabled = !config.enabled;
         }
-        
+
         // Save updated configuration
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-        
+
         // Send confirmation message
         await sock.sendMessage(chatId, {
-            text: `✅ Auto-typing has been ${config.enabled ? 'enabled' : 'disabled'}!`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363161513685998@newsletter',
-                    newsletterName: 'KnightBot MD',
-                    serverMessageId: -1
-                }
-            }
+            text: `✅ Auto-typing has been ${config.enabled ? 'enabled' : 'disabled'}!`
         });
-        
+
     } catch (error) {
         console.error('Error in autotyping command:', error);
         await sock.sendMessage(chatId, {
-            text: '❌ Error processing command!',
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363161513685998@newsletter',
-                    newsletterName: 'KnightBot MD',
-                    serverMessageId: -1
-                }
-            }
+            text: '❌ Error processing command!'
         });
     }
 }
@@ -123,25 +87,25 @@ async function handleAutotypingForMessage(sock, chatId, userMessage) {
         try {
             // First subscribe to presence updates for this chat
             await sock.presenceSubscribe(chatId);
-            
+
             // Send available status first
             await sock.sendPresenceUpdate('available', chatId);
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             // Then send the composing status
             await sock.sendPresenceUpdate('composing', chatId);
-            
+
             // Simulate typing time based on message length with increased minimum time
             const typingDelay = Math.max(3000, Math.min(8000, userMessage.length * 150));
             await new Promise(resolve => setTimeout(resolve, typingDelay));
-            
+
             // Send composing again to ensure it stays visible
             await sock.sendPresenceUpdate('composing', chatId);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             // Finally send paused status
             await sock.sendPresenceUpdate('paused', chatId);
-            
+
             return true; // Indicates typing was shown
         } catch (error) {
             console.error('❌ Error sending typing indicator:', error);
@@ -157,25 +121,25 @@ async function handleAutotypingForCommand(sock, chatId) {
         try {
             // First subscribe to presence updates for this chat
             await sock.presenceSubscribe(chatId);
-            
+
             // Send available status first
             await sock.sendPresenceUpdate('available', chatId);
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             // Then send the composing status
             await sock.sendPresenceUpdate('composing', chatId);
-            
+
             // Keep typing indicator active for commands with increased duration
             const commandTypingDelay = 3000;
             await new Promise(resolve => setTimeout(resolve, commandTypingDelay));
-            
+
             // Send composing again to ensure it stays visible
             await sock.sendPresenceUpdate('composing', chatId);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             // Finally send paused status
             await sock.sendPresenceUpdate('paused', chatId);
-            
+
             return true; // Indicates typing was shown
         } catch (error) {
             console.error('❌ Error sending command typing indicator:', error);
@@ -191,19 +155,19 @@ async function showTypingAfterCommand(sock, chatId) {
         try {
             // This function runs after the command has been executed and response sent
             // So we just need to show a brief typing indicator
-            
+
             // Subscribe to presence updates
             await sock.presenceSubscribe(chatId);
-            
+
             // Show typing status briefly
             await sock.sendPresenceUpdate('composing', chatId);
-            
+
             // Keep typing visible for a short time
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             // Then pause
             await sock.sendPresenceUpdate('paused', chatId);
-            
+
             return true;
         } catch (error) {
             console.error('❌ Error sending post-command typing indicator:', error);

@@ -69,15 +69,8 @@ async function miscCommand(sock, chatId, message, args) {
             case 'heart':
                 await simpleAvatarOnly('heart');
                 break;
-            
-            case 'horny':
-                await simpleAvatarOnly('horny');
-                break;
             case 'circle':
                 await simpleAvatarOnly('circle');
-                break;
-            case 'lgbt':
-                await simpleAvatarOnly('lgbt');
                 break;
             case 'lied':
                 await simpleAvatarOnly('lied');
@@ -122,7 +115,7 @@ async function miscCommand(sock, chatId, message, args) {
                 break;
             }
 
-           
+
             case 'oogway':
             case 'oogway2': {
                 const quote = rest.join(' ').trim();
@@ -169,21 +162,6 @@ async function miscCommand(sock, chatId, message, args) {
                 await sock.sendMessage(chatId, { image: Buffer.from(response.data) }, { quoted: message });
                 break;
             }
-            // Overlay endpoints
-            case 'comrade':
-            case 'gay':
-            case 'glass':
-            case 'jail':
-            case 'passed':
-            case 'triggered': {
-                const avatarUrl = await getQuotedOrOwnImageUrl(sock, message);
-                const overlay = sub; // same name for path
-                const url = `https://api.some-random-api.com/canvas/overlay/${overlay}?avatar=${encodeURIComponent(avatarUrl)}`;
-                const response = await axios.get(url, { responseType: 'arraybuffer' });
-                await sock.sendMessage(chatId, { image: Buffer.from(response.data) }, { quoted: message });
-                break;
-            }
-
             default:
                 await sock.sendMessage(chatId, { text: 'Usage: .misc <heart|horny|circle|lgbt|lesbian|nonbinary|pansexual|transgender|lied|lolice|simpcard|tonikawa|its-so-stupid <text>|namecard u|b|d?|nobitches <text>|oogway <q>|oogway2 <q>|tweet dn|un|c|theme?|youtube-comment un|c>' }, { quoted: message });
                 break;
