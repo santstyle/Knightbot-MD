@@ -3,7 +3,7 @@ const settings = require('../settings');
 async function broadcastCommand(sock, chatId, message, args) {
     // Hanya owner yang bisa broadcast - verifikasi berdasarkan JID
     const sender = message.key?.participant || message.key?.remoteJid;
-    const ownerJid = settings.ownerJid + '@s.whatsapp.net'; // Tambahkan suffix WhatsApp
+    const ownerJid = settings.ownerNumber + '@s.whatsapp.net'; // Tambahkan suffix WhatsApp
 
     if (sender !== ownerJid) {
         await sock.sendMessage(chatId, { text: '❌ Kamu tidak punya akses untuk broadcast!' }, { quoted: message });
